@@ -25,7 +25,7 @@ class BellaAI {
 
     constructor() {
         this.cloudAPI = new CloudAPIService();
-        this.useCloudAPI = false; // 默认使用本地模型
+        this.useCloudAPI = true; // use OpenAI by default
         this.currentMode = 'casual'; // 聊天模式：casual, assistant, creative
     }
 

@@ -1,4 +1,4 @@
-// 导入BellaAI核心模块
+// Import BellaAI core module
 import { BellaAI } from './core.js';
 import { ChatInterface } from './chatInterface.js';
 
@@ -15,34 +15,34 @@ document.addEventListener('DOMContentLoaded', async function() {
     let bellaAI;
     let chatInterface;
     
-    // 首先初始化聊天界面（不依赖AI）
+    // Initialize chat interface first (independent of AI)
     try {
         chatInterface = new ChatInterface();
-        console.log('聊天界面初始化成功');
-        console.log('ChatInterface实例创建完成:', chatInterface);
-        console.log('聊天容器元素:', chatInterface.chatContainer);
-        console.log('聊天容器是否在DOM中:', document.body.contains(chatInterface.chatContainer));
+        console.log('Chat interface initialized');
+        console.log('ChatInterface instance created:', chatInterface);
+        console.log('Chat container element:', chatInterface.chatContainer);
+        console.log('Is chat container in DOM:', document.body.contains(chatInterface.chatContainer));
         
-        // 自动显示聊天界面（调试用）
+        // Auto-show the chat interface for debugging
         setTimeout(() => {
-            console.log('尝试自动显示聊天界面...');
+            console.log('Trying to show chat interface...');
             chatInterface.show();
-            console.log('聊天界面已自动显示');
-            console.log('聊天界面可见性:', chatInterface.getVisibility());
-            console.log('聊天容器类名:', chatInterface.chatContainer.className);
+            console.log('Chat interface auto-shown');
+            console.log('Chat visibility:', chatInterface.getVisibility());
+            console.log('Chat container class:', chatInterface.chatContainer.className);
         }, 2000);
     } catch (error) {
-        console.error('聊天界面初始化失败:', error);
+        console.error('Chat interface initialization failed:', error);
     }
     
-    // 然后尝试初始化AI核心
+    // Then initialize the AI core
     micButton.disabled = true;
-    transcriptDiv.textContent = '正在唤醒贝拉的核心...';
+    transcriptDiv.textContent = 'Waking Bella...';
     try {
         bellaAI = await BellaAI.getInstance();
-        console.log('Bella AI 初始化成功');
+        console.log('Bella AI initialized');
         
-        // 设置聊天界面的AI回调函数
+        // Set chat AI callback
         if (chatInterface) {
             chatInterface.onMessageSend = async (message) => {
                 try {
@@ -51,30 +51,30 @@ document.addEventListener('DOMContentLoaded', async function() {
                     chatInterface.hideTypingIndicator();
                     chatInterface.addMessage('assistant', response);
                 } catch (error) {
-                    console.error('AI处理错误:', error);
+                    console.error('AI processing error:', error);
                     chatInterface.hideTypingIndicator();
-                    chatInterface.addMessage('assistant', '抱歉，我现在有点困惑，请稍后再试...');
+                    chatInterface.addMessage('assistant', 'Sorry, I\'m confused. Please try again later...');
                 }
             };
         }
         
         micButton.disabled = false;
-        transcriptDiv.textContent = '贝拉已准备好，请点击麦克风开始对话。';
+        transcriptDiv.textContent = 'Bella is ready. Click the mic to talk.';
     } catch (error) {
         console.error('Failed to initialize Bella AI:', error);
-        transcriptDiv.textContent = 'AI模型加载失败，但聊天界面仍可使用。';
+        transcriptDiv.textContent = 'AI models failed to load, but chat still works.';
         
-        // 即使AI失败，也提供基本的聊天功能
+        // Provide basic chat even if AI fails
         if (chatInterface) {
             chatInterface.onMessageSend = async (message) => {
                 chatInterface.showTypingIndicator();
                 setTimeout(() => {
                     chatInterface.hideTypingIndicator();
                     const fallbackResponses = [
-                        '我的AI核心还在加载中，请稍后再试...',
-                        '抱歉，我现在无法正常思考，但我会努力学习的！',
-                        '我的大脑还在启动中，请给我一点时间...',
-                        '系统正在更新，暂时无法提供智能回复。'
+                        'My AI core is still loading, please try again later...',
+                        'Sorry, I cannot think clearly right now but I am learning!',
+                        'My brain is still booting up, give me a moment...',
+                        'System is updating, smart replies are temporarily unavailable.'
                     ];
                     const randomResponse = fallbackResponses[Math.floor(Math.random() * fallbackResponses.length)];
                     chatInterface.addMessage('assistant', randomResponse);
@@ -92,7 +92,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         // Hide it after the animation to prevent it from blocking interactions
         setTimeout(() => {
             loadingScreen.style.display = 'none';
-            // 显示聊天控制面板
+            // Show chat control panel
             const chatControlPanel = document.querySelector('.chat-control-panel');
             if (chatControlPanel) {
                 chatControlPanel.classList.add('visible');
@@ -103,7 +103,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     let activeVideo = video1;
     let inactiveVideo = video2;
 
-    // 视频列表
+    // Video list
     const videoList = [
         '视频资源/3D 建模图片制作.mp4',
         '视频资源/jimeng-2025-07-16-1043-笑着优雅的左右摇晃，过一会儿手扶着下巴，保持微笑.mp4',
@@ -113,9 +113,9 @@ document.addEventListener('DOMContentLoaded', async function() {
         '视频资源/负面/jimeng-2025-07-16-9418-双手叉腰，嘴巴一直在嘟囔，表情微微生气.mp4'
     ];
 
-    // --- 视频交叉淡入淡出播放功能 ---
+    // --- Video cross fade playback ---
     function switchVideo() {
-        // 1. 选择下一个视频
+        // 1. Choose the next video
         const currentVideoSrc = activeVideo.querySelector('source').getAttribute('src');
         let nextVideoSrc = currentVideoSrc;
         while (nextVideoSrc === currentVideoSrc) {
@@ -123,30 +123,30 @@ document.addEventListener('DOMContentLoaded', async function() {
             nextVideoSrc = videoList[randomIndex];
         }
 
-        // 2. 设置不活动的 video 元素的 source
+        // 2. Set the source on the inactive video
         inactiveVideo.querySelector('source').setAttribute('src', nextVideoSrc);
         inactiveVideo.load();
 
-        // 3. 当不活动的视频可以播放时，执行切换
+        // 3. Once the inactive video can play, switch
         inactiveVideo.addEventListener('canplaythrough', function onCanPlayThrough() {
-            // 确保事件只触发一次
+            // Ensure the event only triggers once
             inactiveVideo.removeEventListener('canplaythrough', onCanPlayThrough);
 
-            // 4. 播放新视频
+            // 4. Play the new video
             inactiveVideo.play().catch(error => {
                 console.error("Video play failed:", error);
             });
 
-            // 5. 切换 active class 来触发 CSS 过渡
+            // 5. Switch active class to trigger CSS transition
             activeVideo.classList.remove('active');
             inactiveVideo.classList.add('active');
 
-            // 6. 更新角色
+            // 6. Swap roles
             [activeVideo, inactiveVideo] = [inactiveVideo, activeVideo];
 
-            // 为新的 activeVideo 绑定 ended 事件
+            // Bind ended event for the new activeVideo
             activeVideo.addEventListener('ended', switchVideo, { once: true });
-        }, { once: true }); // 使用 { once: true } 确保事件只被处理一次
+        }, { once: true }); // use { once: true } to ensure the event fires only once
     }
 
     // 初始启动
@@ -159,22 +159,22 @@ document.addEventListener('DOMContentLoaded', async function() {
     if (chatToggleBtn) {
         chatToggleBtn.addEventListener('click', () => {
             if (chatInterface) {
-                console.log('聊天按钮被点击');
-                console.log('点击前聊天界面状态:', chatInterface.getVisibility());
-                console.log('点击前聊天容器类名:', chatInterface.chatContainer.className);
+                console.log('Chat button clicked');
+                console.log('Visibility before click:', chatInterface.getVisibility());
+                console.log('Class before click:', chatInterface.chatContainer.className);
                 
                 chatInterface.toggle();
                 
-                console.log('点击后聊天界面状态:', chatInterface.getVisibility());
-                console.log('点击后聊天容器类名:', chatInterface.chatContainer.className);
-                console.log('聊天界面切换，当前状态:', chatInterface.getVisibility());
+                console.log('Visibility after click:', chatInterface.getVisibility());
+                console.log('Class after click:', chatInterface.chatContainer.className);
+                console.log('Chat toggled, current state:', chatInterface.getVisibility());
                 
-                // 更新按钮状态
+                // Update button label
                 const isVisible = chatInterface.getVisibility();
-                chatToggleBtn.innerHTML = isVisible ? 
-                    '<i class="fas fa-times"></i><span>关闭</span>' : 
-                    '<i class="fas fa-comments"></i><span>聊天</span>';
-                console.log('按钮文本更新为:', chatToggleBtn.innerHTML);
+                chatToggleBtn.innerHTML = isVisible ?
+                    '<i class="fas fa-times"></i><span>Close</span>' :
+                    '<i class="fas fa-comments"></i><span>Chat</span>';
+                console.log('Button text updated:', chatToggleBtn.innerHTML);
             }
         });
     }
@@ -183,20 +183,20 @@ document.addEventListener('DOMContentLoaded', async function() {
         chatTestBtn.addEventListener('click', () => {
             if (chatInterface) {
                 const testMessages = [
-                    '你好！我是贝拉，很高兴见到你！',
-                    '聊天界面工作正常，所有功能都已就绪。',
-                    '这是一条测试消息，用来验证界面功能。'
+                    'Hi! I\'m Bella, nice to meet you!',
+                    'The chat interface is working correctly.',
+                    'This is a test message to verify the UI.'
                 ];
                 const randomMessage = testMessages[Math.floor(Math.random() * testMessages.length)];
                 chatInterface.addMessage('assistant', randomMessage);
                 
-                // 如果聊天界面未显示，则自动显示
+                // If chat is hidden, show it automatically
                 if (!chatInterface.getVisibility()) {
                     chatInterface.show();
-                    chatToggleBtn.innerHTML = '<i class="fas fa-times"></i><span>关闭</span>';
+                    chatToggleBtn.innerHTML = '<i class="fas fa-times"></i><span>Close</span>';
                 }
                 
-                console.log('测试消息已添加:', randomMessage);
+            console.log('Test message added:', randomMessage);
             }
         });
     }
@@ -209,9 +209,9 @@ document.addEventListener('DOMContentLoaded', async function() {
     // 检查浏览器是否支持语音识别
     if (SpeechRecognition) {
         recognition = new SpeechRecognition();
-        recognition.continuous = true; // 持续识别
-        recognition.lang = 'zh-CN'; // 设置语言为中文
-        recognition.interimResults = true; // 获取临时结果
+        recognition.continuous = true; // continuous recognition
+        recognition.lang = 'zh-CN'; // language set to Chinese
+        recognition.interimResults = true; // get interim results
 
         recognition.onresult = async (event) => {
             const transcriptContainer = document.getElementById('transcript');
@@ -227,14 +227,14 @@ document.addEventListener('DOMContentLoaded', async function() {
             }
 
             // Update interim results
-            transcriptContainer.textContent = `你: ${final_transcript || interim_transcript}`;
+            transcriptContainer.textContent = `You: ${final_transcript || interim_transcript}`;
 
             // Once we have a final result, process it with the AI
             if (final_transcript && bellaAI) {
                 const userText = final_transcript.trim();
-                transcriptContainer.textContent = `你: ${userText}`;
+                transcriptContainer.textContent = `You: ${userText}`;
 
-                // 如果聊天界面已打开，也在聊天窗口中显示
+                // If chat is open, also show in the chat window
                 if (chatInterface && chatInterface.getVisibility()) {
                     chatInterface.addMessage('user', userText);
                 }
@@ -242,7 +242,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 try {
                     // Let Bella think
                     const thinkingText = document.createElement('p');
-                    thinkingText.textContent = '贝拉正在思考...';
+                    thinkingText.textContent = 'Bella is thinking...';
                     thinkingText.style.color = '#888';
                     thinkingText.style.fontStyle = 'italic';
                     transcriptContainer.appendChild(thinkingText);
@@ -251,18 +251,18 @@ document.addEventListener('DOMContentLoaded', async function() {
                     
                     transcriptContainer.removeChild(thinkingText);
                     const bellaText = document.createElement('p');
-                    bellaText.textContent = `贝拉: ${response}`;
+                    bellaText.textContent = `Bella: ${response}`;
                     bellaText.style.color = '#ff6b9d';
                     bellaText.style.fontWeight = 'bold';
                     bellaText.style.marginTop = '10px';
                     transcriptContainer.appendChild(bellaText);
 
-                    // 如果聊天界面已打开，也在聊天窗口中显示
+                    // If chat is open, also show in the chat window
                     if (chatInterface && chatInterface.getVisibility()) {
                         chatInterface.addMessage('assistant', response);
                     }
 
-                    // TTS功能暂时禁用，将在下一阶段激活
+                    // TTS temporarily disabled, will be enabled later
                     // TODO: 激活语音合成功能
                     // const audioData = await bellaAI.speak(response);
                     // const blob = new Blob([audioData], { type: 'audio/wav' });
@@ -273,7 +273,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 } catch (error) {
                     console.error('Bella AI processing error:', error);
                     const errorText = document.createElement('p');
-                    const errorMsg = '贝拉处理时遇到问题，但她还在努力学习中...';
+                    const errorMsg = 'Bella had a problem processing but she\'s still learning...';
                     errorText.textContent = errorMsg;
                     errorText.style.color = '#ff9999';
                     transcriptContainer.appendChild(errorText);
@@ -286,19 +286,19 @@ document.addEventListener('DOMContentLoaded', async function() {
         };
 
         recognition.onerror = (event) => {
-            console.error('语音识别错误:', event.error);
+            console.error('Speech recognition error:', event.error);
         };
 
     } else {
-        console.log('您的浏览器不支持语音识别功能。');
-        // 可以在界面上给用户提示
+        console.log('Your browser does not support speech recognition.');
+        // You can notify the user in the UI
     }
 
     // --- 麦克风按钮交互 ---
     let isListening = false;
 
     micButton.addEventListener('click', function() {
-        if (!SpeechRecognition) return; // 如果不支持，则不执行任何操作
+        if (!SpeechRecognition) return; // if unsupported do nothing
 
         isListening = !isListening;
         micButton.classList.toggle('is-listening', isListening);
@@ -306,13 +306,13 @@ document.addEventListener('DOMContentLoaded', async function() {
         const transcriptText = document.getElementById('transcript');
 
         if (isListening) {
-            transcriptText.textContent = '聆听中...'; // 立刻显示提示
+            transcriptText.textContent = 'Listening...'; // show prompt immediately
             transcriptContainer.classList.add('visible');
             recognition.start();
         } else {
             recognition.stop();
             transcriptContainer.classList.remove('visible');
-            transcriptText.textContent = ''; // 清空文本
+            transcriptText.textContent = ''; // clear text
         }
     });
 
